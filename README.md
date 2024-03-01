@@ -1,6 +1,14 @@
 # Group_3
 
+## Contacts - Email
 
+Ayscha Dräger: 57892@novasbe.pt
+
+Anna Lenna Schwarz: schwarz.lena@gmx.de
+
+Katerina Ttikkou: kttikkou@gmail.com
+
+Rita Thaci: ritethaqi@gmail.com
 
 ## Getting started
 
@@ -54,15 +62,7 @@ Every project is different, so consider which of these sections apply to yours. 
 ## Name
 AdPro Project Group_03
 
-## Contacts - Email
 
-Ayscha Dräger: 57892@novasbe.pt
-
-Anna Lenna Schwarz: schwarz.lena@gmx.de
-
-Katerina Ttikkou: kttikkou@gmail.com
-
-Rita Thaci: ritethaqi@gmail.com
 
 ## Description
 Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
