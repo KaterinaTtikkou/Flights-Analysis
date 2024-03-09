@@ -1,7 +1,9 @@
-'''
-Initialization method
+import os
+import pandas as pd
+from zipfile import ZipFile
+import requests
+from io import BytesIO
 
-'''
 class FIIU:
     
     def __init__(self, zip_url='https://gitlab.com/adpro9641208/group_03/-/raw/main/flight_data.zip'):
