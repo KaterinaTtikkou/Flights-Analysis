@@ -58,3 +58,6 @@ class FIIU:
         self.routes_df['Source airport ID'] = self.routes_df['Source airport ID'].astype(int)
         self.routes_df['Model'] = self.routes_df['Equipment'].str.split('-')
         self.routes_df = self.routes_df.explode('Model')
+        self.routes_df['Source airport ID'] = pd.to_numeric(self.routes_df['Source airport ID'].replace('\\N', np.nan), errors='coerce')
+        self.routes_df['Destination airport ID'] = pd.to_numeric(self.routes_df['Destination airport ID'].replace('\\N', np.nan), errors='coerce')
+        self.airports_df['Airport ID'] = pd.to_numeric(self.airports_df['Airport ID'].replace('\\N', np.nan), errors='coerce')
