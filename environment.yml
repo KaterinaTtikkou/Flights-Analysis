@@ -1,0 +1,28 @@
+name: Specifies the name of your Conda environment.
+channels: Lists the Conda channels to search for packages. Here, we include both defaults and conda-forge.
+dependencies: Lists the main packages that Conda will install. In this example, Python 3.8 is specified, and other packages follow. The pip section is used to install additional packages not available through Conda, and specific versions are pinned for reproducibility.
+
+
+This YAML file is a Conda environment specification file (environment.yml). It provides information about the dependencies and environment settings for your project. Let's break down the main components:
+
+name: Specifies the name of the Conda environment. In this case, it's named "adpro."
+
+channels: Lists the Conda channels where Conda will search for packages. The channels specified are defaults and conda-forge.
+
+dependencies: Lists the main packages and their versions that should be installed in the Conda environment. Each line represents a separate package, and the version is specified using the format package_name=version=build_string.
+
+prefix: Specifies the installation directory for the Conda environment. In this case, it's set to /Users/margaridapintobasto/opt/anaconda3/envs/adpro.
+
+pip section: Specifies additional packages to be installed using pip. These packages and their versions are listed under the pip section.
+
+To understand what to put in a YAML file for a Conda environment, you need to consider the specific requirements of your project. Typically, you'll list the Python version, followed by the necessary packages and their versions. You can check the documentation or requirements of your project to determine which packages and versions are required.
+
+Some best practices for creating a Conda environment YAML file:
+
+Specify Versions: Pinning versions of packages ensures reproducibility. Include the exact versions that are known to work with your project.
+
+Include Channels: Add relevant channels to ensure that Conda can find the specified packages.
+
+Separate Conda and Pip Packages: Use the pip section for packages not available through Conda.
+
+Specify Prefix: Define the installation directory for your Conda environment using the prefix key.
