@@ -3,6 +3,13 @@ import pandas as pd
 from zipfile import ZipFile
 import requests
 from io import BytesIO
+import numpy as np
+import geopandas as gpd
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+from langchain_openai import OpenA, ChatOpenAI
+import langchain
+from IPython.display import Markdown
 
 class FIIU:
     
@@ -84,6 +91,7 @@ class FIIU:
         country_map.plot(ax=ax, color='white', edgecolor='black')
         gdf.plot(ax=ax, color='red', markersize=10)
         plt.show()
+        
     def plot_airports_by_country(self, country_name):
         # Filter airports by the specified country
         country_airports = self.airports_df[self.airports_df['Country'] == country_name]
@@ -107,49 +115,6 @@ class FIIU:
         gdf.plot(ax=ax, color='red', markersize=10)
         plt.show()
 
-    def plot_flights_from_country(self, country, internal=False):
-        # Filter routes based on the country
-        country_routes = self.routes_df[self.routes_df['Source airport'].isin(self.airports_df[self.airports_df['Country'] == country]['IATA'])]
-
-        # Optionally, filter internal flights
-        if internal:
-            country_airports = self.airports_df[self.airports_df['Country'] == country]['IATA']
-            country_routes = country_routes[country_routes['Destination airport'].isin(country_airports)]
-
-        # Create Plotly traces for flight paths
-        flight_paths = []
-        for i, row in country_routes.iterrows():
-            origin = self.airports_df.loc[self.airports_df['IATA'] == row['Source airport']].iloc[0]
-            destination = self.airports_df.loc[self.airports_df['IATA'] == row['Destination airport']].iloc[0]
-
-            flight_paths.append(
-                go.Scattergeo(
-                    locationmode='ISO-3',
-                    lon=[float(origin['Longitude']), float(destination['Longitude'])],
-                    lat=[float(origin['Latitude']), float(destination['Latitude'])],
-                    mode='lines',
-                    line=dict(width=2, color='blue'),
-                    opacity=0.7,
-                    name=f"{origin['IATA']} to {destination['IATA']}"
-                )
-            )
-
-        # Set layout for the map
-        layout = go.Layout(
-            title='Internal flights' if internal else f"All flights from {country}",
-            showlegend=True,
-            geo=dict(
-                scope='world',
-                projection_type='natural earth',
-                showland=True,
-                landcolor='rgb(243, 243, 243)',
-                countrycolor='rgb(204, 204, 204)',
-            ),
-        )
-
-        # Create the figure and add the traces
-        fig = go.Figure(data=flight_paths, layout=layout)
-        fig.show()
 
     def add_distance_column(self):
 
@@ -357,4 +322,271 @@ class FIIU:
         # Create the figure and add the traces
         fig = go.Figure(data=flight_paths, layout=layout)
         fig.show()
+        def plot_flights_from_country(self, country, internal=False):
+        # Filter routes based on the country
+        country_routes = self.routes_df[self.routes_df['Source airport'].isin(self.airports_df[self.airports_df['Country'] == country]['IATA'])]
+
+        # Optionally, filter internal flights
+        if internal:
+            country_airports = self.airports_df[self.airports_df['Country'] == country]['IATA']
+            country_routes = country_routes[country_routes['Destination airport'].isin(country_airports)]
+
+        # Create Plotly traces for flight paths
+        flight_paths = []
+        for i, row in country_routes.iterrows():
+            origin = self.airports_df.loc[self.airports_df['IATA'] == row['Source airport']].iloc[0]
+            destination = self.airports_df.loc[self.airports_df['IATA'] == row['Destination airport']].iloc[0]
+
+            flight_paths.append(
+                go.Scattergeo(
+                    locationmode='ISO-3',
+                    lon=[float(origin['Longitude']), float(destination['Longitude'])],
+                    lat=[float(origin['Latitude']), float(destination['Latitude'])],
+                    mode='lines',
+                    line=dict(width=2, color='blue'),
+                    opacity=0.7,
+                    name=f"{origin['IATA']} to {destination['IATA']}"
+                )
+            )
+
+        # Set layout for the map
+        layout = go.Layout(
+            title='Internal flights' if internal else f"All flights from {country}",
+            showlegend=True,
+            geo=dict(
+                scope='world',
+                projection_type='natural earth',
+                showland=True,
+                landcolor='rgb(243, 243, 243)',
+                countrycolor='rgb(204, 204, 204)',
+            ),
+        )
+
+        # Create the figure and add the traces
+        fig = go.Figure(data=flight_paths, layout=layout)
+        fig.show()
+    
+    def aircrafts(self):
+        """
+        Retrieve a list of unique aircraft names based on the merged data of routes and airplanes.
+
+        Returns:
+            numpy.ndarray: An array containing unique aircraft names.
+
+        Example:
+            your_instance = YourClassName()
+            unique_aircraft_names = your_instance.aircrafts()
+            print(unique_aircraft_names)
+        """
+        aircraft_models = pd.merge(self.routes_df, self.airplanes_df, left_on="Model", right_on="IATA code", how='left')
+        unique_aircraft_names = aircraft_models['Name'].unique()
+        return unique_aircraft_names
+    
+    def aircraft_info(self, _aircraft_name):
+        """
+        Display specifications of a given aircraft using the OpenAI GPT-3.5 Turbo model.
+
+        Parameters:
+        - _aircraft_name (str): The name of the aircraft for which specifications are requested.
+
+        Raises:
+        - ValueError: If the provided aircraft name is not found in the dataset.
+                      Instructs the user to choose a valid aircraft name from the available dataset.
+        - ValueError: If the OpenAI API key is not found in the environment variable.
+                      Instructs the user to set the 'OPENAI_API_KEY' environment variable with their API key.
+
+        Note:
+        - Ensure that the OpenAI API key is set in the 'OPENAI_API_KEY' environment variable.
+        - The generated specifications are displayed in Markdown format.
+        
+        Example usage:
+        your_instance = FIIU()
+        your_instance.aircraft_info("Boeing 747")
+        """
+        # Check if the aircraft name is in the list of aircrafts
+        aircrafts = self.aircrafts()
+        if _aircraft_name not in self.aircrafts_data:
+            raise ValueError(f"Aircraft '{_aircraft_name}' not found. Please choose a valid aircraft name from the dataset. Available aircraft models:\n{list(self.aircrafts_data.keys())}")
+
+        # Fetch your OpenAI API key from the environment variable
+        api_key = os.environ.get('OPENAI_API_KEY')
+        
+        if not api_key:
+            raise ValueError("OpenAI API key not found. Please set the 'OPENAI_API_KEY' environment variable with your API key.")
+        else:
+            # Initialize the OpenAI language model
+            llm = ChatOpenAI(api_key=api_key, temperature=0.9)
+
+            # Generate a table of specifications in Markdown using LLM
+            specifications_prompt = f"Provide specifications table for {_aircraft_name}."
+            result = llm.invoke(specifications_prompt)
+            specifications_content = result.content
+
+            # Display the generated table of specifications in Markdown
+            display(Markdown(specifications_content))
+       
+    def airports(self):
+        """
+        Retrieve a list of unique airport names based on the 'IATA' codes in the airports DataFrame.
+
+        Returns:
+            numpy.ndarray: An array containing unique airport names.
+
+        Example:
+            your_instance = YourClassName()
+            unique_airport_names = your_instance.airports()
+            print(unique_airport_names)
+        """
+        airport_names = self.airports_df['IATA'].unique()
+        return airport_names
+    
+    
+    def airport_info(self, _airport_name):
+        """
+        Display specifications of a given airport using the OpenAI GPT-3.5 Turbo model.
+
+        Parameters:
+        - _airport_name (str): The name of the airport for which specifications are requested.
+
+        Raises:
+        - ValueError: If the OpenAI API key is not found in the environment variable.
+                      Instructs the user to set the 'OPENAI_API_KEY' environment variable with their API key.
+
+        Note:
+        - Ensure that the OpenAI API key is set in the 'OPENAI_API_KEY' environment variable.
+        - The generated specifications are displayed in Markdown format.
+
+        Example usage:
+        >>> your_instance = FIIU()
+        >>> your_instance.airport_info("John F. Kennedy International Airport")
+        """
+        # Fetch your OpenAI API key from the environment variable
+        api_key = os.environ.get('OPENAI_API_KEY')
+        
+        if not api_key:
+            raise ValueError("OpenAI API key not found. Please set the 'OPENAI_API_KEY' environment variable with your API key.")
+        else:
+            # Initialize the OpenAI language model
+            llm = ChatOpenAI(api_key=api_key, temperature=0.9)
+
+            # Check if the airport name is in the list of airports
+            airports = self.airports()
+            if _airport_name not in airports:
+                print(f"Airport information not available for '{_airport_name}'.")
+            else:
+                # Generate a table of specifications in Markdown using LLM
+                specifications_prompt = f"Provide specifications table for {_airport_name}."
+                result = llm.invoke(specifications_prompt)
+                specifications_content = result.content
+
+                # Display the generated table of specifications in Markdown
+                display(Markdown(specifications_content))
+
+    def plot_flights_from_country(self, country, internal=False, short_haul_cutoff=1000):
+        # Filter routes by country
+        country_airports = self.airports_df[self.airports_df['Country'] == country]['IATA']
+        relevant_routes = self.routes_df[self.routes_df['Source airport'].isin(country_airports)]
+
+        if internal:
+            relevant_routes = relevant_routes[relevant_routes['Destination airport'].isin(country_airports)]
+
+        flight_paths = []
+        total_short_haul_distance = 0  # Initialize total distance for short-haul flights
+
+        # Define emissions factors (example values, adjust according to credible sources)
+        flight_emission_per_km = 246  # grams of CO2 per km for flights
+        train_emission_per_km = 35    # grams of CO2 per km for trains
+
+        # Containers for the legend names
+        added_short_haul_legend = False
+        added_long_haul_legend = False
+
+        for _, row in relevant_routes.iterrows():
+            origin = self.airports_df[self.airports_df['IATA'] == row['Source airport']].iloc[0]
+            destination = self.airports_df[self.airports_df['IATA'] == row['Destination airport']].iloc[0]
+            distance = self.haversine_distance(origin['Longitude'], origin['Latitude'], destination['Longitude'], destination['Latitude'])
+
+            is_short_haul = distance <= short_haul_cutoff
+            color = 'green' if is_short_haul else 'red'
+            if is_short_haul:
+                total_short_haul_distance += distance
+                if not added_short_haul_legend:
+                    name = 'Short-Haul Flight'
+                    added_short_haul_legend = True
+                else:
+                    name = None
+            else:
+                if not added_long_haul_legend:
+                    name = 'Long-Haul Flight'
+                    added_long_haul_legend = True
+                else:
+                    name = None
+
+            flight_paths.append(go.Scattergeo(
+                locationmode='ISO-3',
+                lon=[origin['Longitude'], destination['Longitude']],
+                lat=[origin['Latitude'], destination['Latitude']],
+                mode='lines',
+                line=dict(width=2, color=color),
+                opacity=0.7,
+                name=name
+            ))
+
+        # Calculate emissions and reductions
+        total_flight_emissions = total_short_haul_distance * flight_emission_per_km / 1e6  # Convert to tons
+        potential_train_emissions = total_short_haul_distance * train_emission_per_km / 1e6  # Convert to tons
+        potential_emission_reduction = total_flight_emissions - potential_train_emissions
+
+
+        # Annotations for total short-haul distance and potential emission reductions
+        annotations = [
+            go.layout.Annotation(
+                text=f"Total short-haul distance: {total_short_haul_distance:.2f} km",
+                align='left',
+                showarrow=False,
+                xref='paper',
+                yref='paper',
+                x=0.01,
+                y=1.10,
+                xanchor='left',
+                yanchor='bottom',
+                font=dict(size=12),
+                bgcolor="rgba(255, 255, 255, 0.9)"
+            ),
+            go.layout.Annotation(
+                text=f"Potential CO2 reduction by replacing flights with trains: {potential_emission_reduction:.2f} tons",
+                align='left',
+                showarrow=False,
+                xref='paper',
+                yref='paper',
+                x=0.01,
+                y=1.05,
+                xanchor='left',
+                yanchor='bottom',
+                font=dict(size=12),
+                bgcolor="rgba(255, 255, 255, 0.9)"
+            )
+        ]
+
+        # Create the figure with the flight paths added
+        fig = go.Figure(data=flight_paths)
+
+        # Update the layout for the figure
+        fig.update_layout(
+            title=f"Flight Routes from {country} (Short-Haul vs Long-Haul)",
+            showlegend=True,
+            geo=dict(
+                scope='world',
+                projection_type='equirectangular',
+                showland=True,
+                landcolor='rgb(243,243,243)',
+                countrycolor='rgb(204,204,204)'
+            ),
+            annotations=annotations,
+            margin=dict(t=120, l=0, r=0, b=0)  # Adjust the top margin to ensure annotations are visible
+        )
+
+        # Show the figure
+        fig.show()
+
 
