@@ -1,13 +1,25 @@
+from math import radians, sin, cos, sqrt, atan2
+import unittest
+
 class TestFIIUAirports(unittest.TestCase):
+    """
+    Unit tests for the FIIU class, specifically for calculating distances between airports.
+    """
 
     def setUp(self):
         self.fiiu_instance = FIIU()
 
     def test_distance_between_same_airport(self):
+        """
+        Test case for calculating the distance between the same airport, which should be 0.
+        """
         distance = self.fiiu_instance.haversine_distance(1, 1, 1, 1)
         self.assertEqual(distance, 0)
 
     def test_distance_between_different_airports(self):
+        """
+        Test case for calculating the distance between different airports in the same continent.
+        """
         airport_data = pd.DataFrame({
             'Airport ID': [1, 2, 3],
             'Latitude': [-6.081690, -5.207080, -5.826790],
@@ -21,6 +33,9 @@ class TestFIIUAirports(unittest.TestCase):
         self.assertAlmostEqual(distance, expected_distance, places=2)
 
     def test_distance_between_airports_in_different_continents(self):
+        """
+        Test case for calculating the distance between airports in different continents.
+        """
         airport_data = pd.DataFrame({
             'Airport ID': [1, 2, 3],
             'Latitude': [-6.081690, -5.207080, -5.826790],
