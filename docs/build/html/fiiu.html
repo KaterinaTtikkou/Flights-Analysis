@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>fiiu Module &#8212; Group_03 1.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to Group_03’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="module-fiiu">
+<span id="fiiu-module"></span><h1>fiiu Module<a class="headerlink" href="#module-fiiu" title="Permalink to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="fiiu.FIIU">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fiiu.</span></span><span class="sig-name descname"><span class="pre">FIIU</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">zip_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://gitlab.com/adpro1/adpro2024/-/raw/main/Files/flight_data.zip'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Flight Information and Analysis Utility class.</p>
+<p>This class provides methods for downloading,
+processing, and analyzing flight data.
+It includes functionalities such as calculating distances,
+plotting flight paths, and analyzing aircraft and airport information.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.add_distance_column">
+<span class="sig-name descname"><span class="pre">add_distance_column</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.add_distance_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a ‘distance’ column to the routes DataFrame,
+representing the haversine distance
+between source and destination airports.</p>
+<p>Returns:
+None</p>
+<p>This method merges the routes DataFrame with
+the airports DataFrame twice to obtain
+the coordinates (latitude and longitude)
+for both source and destination airports.
+Then, it calculates the haversine distance between
+these coordinates and adds the result
+as a new ‘distance’ column to the routes DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.aircraft">
+<span class="sig-name descname"><span class="pre">aircraft</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.aircraft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of unique aircraft names from the merged DataFrame of
+routes and airplanes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.aircraft_info">
+<span class="sig-name descname"><span class="pre">aircraft_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_aircraft_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.aircraft_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display specifications of a given aircraft using the OpenAI
+GPT-3.5 Turbo model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_aircraft_name</strong> (<em>str</em>) – The name of the aircraft for which</p></li>
+<li><p><strong>requested.</strong> (<em>specifications are</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>ValueError</strong> – If the provided aircraft name is not found in the
+    dataset.
+    Instructs the user to choose a valid aircraft name from
+    the available dataset.</p></li>
+<li><p><strong>ValueError</strong> – If the OpenAI API key is not found in the environment
+    variable.
+    Instructs the user to set the ‘OPENAI_API_KEY’
+    environment variable with their API key.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ensure that the OpenAI API key is set in the ‘OPENAI_API_KEY’
+environment variable.
+The generated specifications are displayed in Markdown format.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.airport_info">
+<span class="sig-name descname"><span class="pre">airport_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_airport_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.airport_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display specifications of a given airport using the OpenAI
+GPT-3.5 Turbo model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>_airport_name</strong> (<em>str</em>) – The name of the airport for which</p></li>
+<li><p><strong>requested.</strong> (<em>specifications are</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the OpenAI API key is not found in the
+    environment variable.
+    Instructs the user to set the ‘OPENAI_API_KEY’
+    environment variable with their API key.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Ensure that the OpenAI API key is set in the ‘OPENAI_API_KEY’
+environment variable.
+The generated specifications are displayed in Markdown format.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.airports">
+<span class="sig-name descname"><span class="pre">airports</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.airports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return unique airport names from the airports DataFrame.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.calculate_distances">
+<span class="sig-name descname"><span class="pre">calculate_distances</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.calculate_distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates distances between source and
+destination airports in the routes DataFrame.</p>
+<p>Returns:
+dict: A dictionary containing pairs of airport IDs as keys and
+their corresponding haversine distances as values.
+The distances are calculated using the haversine_distance method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.distance_analysis">
+<span class="sig-name descname"><span class="pre">distance_analysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_median</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.distance_analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyzes the distribution of flight distances in the routes DataFrame.</p>
+<p>Parameters:
+- bins (int, optional): The number of bins in the histogram.</p>
+<blockquote>
+<div><p>Defaults to 30.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>show_mean (bool, optional): If True, displays a vertical
+line for the mean distance. Defaults to True.</p></li>
+<li><p>show_median (bool, optional): If True, displays a
+vertical line for the median distance. Defaults to True.</p></li>
+</ul>
+<p>Returns:
+None</p>
+<p>This method filters out None values, creates a histogram of
+flight distances, and optionally adds vertical lines for
+the mean and median distances. The resulting plot provides
+insights into the distribution of flight distances.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.get_coordinates">
+<span class="sig-name descname"><span class="pre">get_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport_id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.get_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves latitude and longitude coordinates
+for a specified airport ID from the airports DataFrame.</p>
+<p>Parameters:
+- airport_id (int): The unique identifier of the airport
+for which coordinates are requested.</p>
+<p>Returns:
+tuple:
+A tuple containing latitude and longitude coordinates
+of the specified airport.
+If the airport ID is not found in the DataFrame,
+returns (None, None).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.haversine_distance">
+<span class="sig-name descname"><span class="pre">haversine_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lat2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lon2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.haversine_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the haversine distance between
+two sets of latitude and longitude coordinates.</p>
+<p>Parameters:
+- lat1 (float): Latitude of the first point.
+- lon1 (float): Longitude of the first point.
+- lat2 (float): Latitude of the second point.
+- lon2 (float): Longitude of the second point.</p>
+<p>Returns:
+float:
+The haversine distance between the
+two sets of coordinates, in kilometers.
+If any of the input values is None,
+a default distance of 0 is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.plot_airports_by_country">
+<span class="sig-name descname"><span class="pre">plot_airports_by_country</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">country_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.plot_airports_by_country" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots airports in a specified country on a world map.</p>
+<p>Parameters:</p>
+<ul class="simple">
+<li><p>country_name (str):
+The name of the country for which airports will be plotted.</p></li>
+</ul>
+<p>Returns:
+None</p>
+<p>This method filters the airports DataFrame
+based on the provided country name,
+converts the data to a GeoDataFrame,
+and plots the airports on a world map.
+If no airports are found for the specified country,
+an error message is printed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.plot_flights_from_airport">
+<span class="sig-name descname"><span class="pre">plot_flights_from_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport_code</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.plot_flights_from_airport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots flight paths originating from a specified airport.</p>
+<p>Parameters:
+- airport_code (str): The IATA code of the source airport.
+- internal (bool, optional): Whether to filter and plot only</p>
+<blockquote>
+<div><p>internal flights.
+Default is False.</p>
+</div></blockquote>
+<p>Returns:
+None</p>
+<p>This method filters routes based on the specified airport as the
+source airport, and optionally filters internal flights.
+It then creates a Plotly trace for flight paths and plots
+the resulting paths on a geographical map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.plot_flights_from_country">
+<span class="sig-name descname"><span class="pre">plot_flights_from_country</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">country</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.plot_flights_from_country" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots flight paths originating from airports in a specified country,
+distinguishing between internal and all flights.
+The resulting visualization is displayed on a world map.</p>
+<p>Parameters:
+- country (str):</p>
+<blockquote>
+<div><p>Name of country for which flight paths will be plotted.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>internal (bool, optional):
+Whether to filter and plot only internal flights.
+Default is False.</p></li>
+</ul>
+<p>Returns:
+None</p>
+<p>This method filters routes based on airports in the specified country,
+optionally filters internal flights,
+and creates a Plotly trace for flight paths.
+The resulting paths are displayed on a world map,
+and the title of the plot indicates whether it shows internal
+flights or all flights from the country.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.refined_plot_flights_from_country">
+<span class="sig-name descname"><span class="pre">refined_plot_flights_from_country</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">country</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">internal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">short_haul_cutoff</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.refined_plot_flights_from_country" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots flight paths originating from airports in a specified country, distinguishing between
+short-haul and long-haul flights. Additionally, provides information on total short-haul distance,
+potential CO2 emissions reduction by replacing flights with trains, the total number of short-haul flights,
+and visualizes flight paths.</p>
+<p>Parameters:
+- country (str): The name of the country for which flight paths will be plotted.
+- internal (bool, optional): Whether to filter and plot only internal flights. Default is False.
+- short_haul_cutoff (float, optional): Distance threshold (in kilometers) for defining short-haul flights.</p>
+<blockquote>
+<div><p>Default is 1000.</p>
+</div></blockquote>
+<p>Returns:
+None</p>
+<p>This method filters routes based on airports in the specified country, calculates distances,
+and creates a Plotly trace for flight paths. It distinguishes between short-haul and long-haul flights,
+provides annotations for total short-haul distance and potential CO2 emission reductions,
+the total number of short-haul flights, and visualizes the flight paths on a world map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fiiu.FIIU.top_models">
+<span class="sig-name descname"><span class="pre">top_models</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">countries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiiu.FIIU.top_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the N most used airplane models by number of routes.</p>
+<p>Parameters:
+- countries (str or list, optional): The country or list of countries to filter</p>
+<blockquote>
+<div><p>the routes by. If not provided (default), it considers all routes.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>top_n (int, optional): Number of top airplane models to plot. Default is 10.</p></li>
+</ul>
+<p>Returns:
+Plot of the N most used airplane models by number of routes or None.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Group_03</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">fiiu Module</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to Group_03’s documentation!</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Rita Thaci, Ayscha Drager, Anna Lenna Schwarz, Katerina Ttikkou.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/fiiu.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
