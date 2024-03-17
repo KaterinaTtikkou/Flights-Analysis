@@ -60,6 +60,7 @@ To install Group_03 follow these steps:
 2. Navigate to the project directory
 3. Activate the virtual environment
 
+
 ## Dependencies
 
 Before running the project, make sure you have the following dependencies installed:
@@ -76,7 +77,7 @@ Before running the project, make sure you have the following dependencies instal
 
 ## Usage
 
-Once installed, you can use FIIU by following these steps:
+Once installed, you can run the showcase notebook and use FIIU by following these steps:
 
 1. **Download and process data**: To download and read the dataset as well as initiate the class, please use the below:
 
@@ -167,6 +168,10 @@ Once installed, you can use FIIU by following these steps:
     ```python
     fiiu.refined_plot_flights_from_country(country="United States", internal=False, short_haul_cutoff=1000)
     ```
+    
+## Documentation
+
+Documentation is accesed through the docs directory. Within the docs directory you have the build/html directory where you will find fiiu.html. There you can access the documentation in the form of a website.
 
 ## Compliance
 
