@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from langchain_openai import OpenAI, ChatOpenAI
 from IPython.display import Markdown
+import seaborn as sns
 
 
 class FIIU:
@@ -24,7 +25,7 @@ class FIIU:
 
     def __init__(
         self,
-        zip_url="https://gitlab.com/adpro9641208/group_03/-/raw/main/flight_data.zip",
+        zip_url="https://gitlab.com/adpro1/adpro2024/-/raw/main/Files/flight_data.zip",
     ):
         """
         Downloads, extracts, and processes flight data from the given zip URL.
@@ -117,7 +118,7 @@ class FIIU:
         Returns:
         dict: A dictionary containing pairs of airport IDs as keys and
         their corresponding haversine distances as values.
-            The distances are calculated using the haversine_distance method.
+        The distances are calculated using the haversine_distance method.
         """
         distances = {}
 
@@ -290,52 +291,38 @@ class FIIU:
         Analyzes the distribution of flight distances in the routes DataFrame.
 
         Parameters:
-        - bins (int, optional): Number of bins in the histogram. Default is 30.
-        - show_mean (bool, optional):
-          Whether to display a vertical line for the mean distance.
-        Default is True.
-        - show_median (bool, optional):
-          Whether to display a vertical line for the median distance.
-        Default is True.
+        - bins (int, optional): The number of bins in the histogram.
+          Defaults to 30.
+        - show_mean (bool, optional): If True, displays a vertical 
+          line for the mean distance. Defaults to True.
+        - show_median (bool, optional): If True, displays a 
+          vertical line for the median distance. Defaults to True.
 
         Returns:
         None
 
-        This method filters out None values,
-        creates a histogram of flight distances,
-        and optionally adds vertical lines for the mean
-        and median distances.
-        The resulting plot provides insights into
-        the distribution of flight distances.
+        This method filters out None values, creates a histogram of
+        flight distances, and optionally adds vertical lines for 
+        the mean and median distances. The resulting plot provides
+        insights into the distribution of flight distances.
         """
         # Filter out None values (if any)
         valid_distances = self.routes_df["distance"].dropna()
 
         # Create a histogram of flight distances
         plt.figure(figsize=(10, 6))
-        plt.hist(
-            valid_distances, bins=bins, color="skyblue", edgecolor="black", alpha=0.7
-        )
+        plt.hist(valid_distances, bins=bins, color="skyblue", edgecolor="black", 
+                 alpha=0.7)
 
         # Add vertical lines for mean and median distances
         if show_mean:
             mean_val = valid_distances.mean()
-            plt.axvline(
-                mean_val,
-                color="red",
-                linestyle="dashed",
-                linewidth=1,
-                label=f"Mean: {mean_val:.2f}",
-            )
+            plt.axvline(mean_val, color="red", linestyle="dashed", linewidth=1,
+                        label=f"Mean: {mean_val:.2f}")
         if show_median:
             median_val = valid_distances.median()
-            plt.axvline(
-                median_val,
-                color="green",
-                linestyle="dashed",
-                linewidth=1,
-                label=f"Median: {median_val:.2f}",
-            )
+            plt.axvline(median_val, color="green", linestyle="dashed", linewidth=1,
+                        label=f"Median: {median_val:.2f}")
 
         # Set labels and title
         plt.xlabel("Flight Distance")
@@ -352,17 +339,17 @@ class FIIU:
 
         Parameters:
         - airport_code (str): The IATA code of the source airport.
-        - internal (bool, optional):
-          Whether to filter and plot only internal flights.
-        Default is False.
+        - internal (bool, optional): Whether to filter and plot only
+          internal flights.
+          Default is False.
 
         Returns:
         None
 
-        This method filters routes based on the specified airport
-        as the source airport, and optionally filters internal flights.
-        It then creates a Plotly trace for flight paths
-        and plots the resulting paths on a geographical map.
+        This method filters routes based on the specified airport as the
+        source airport, and optionally filters internal flights. 
+        It then creates a Plotly trace for flight paths and plots
+        the resulting paths on a geographical map.
         """
         # Filter routes based on the specified airport as the source airport
         airport_routes = self.routes_df[
@@ -456,15 +443,12 @@ class FIIU:
         Plot the N most used airplane models by number of routes.
 
         Parameters:
-        - countries (str or list, optional):
-          The country or list of countries to filter the routes by.
-          If not provided (default), it considers all routes.
-        - top_n (int, optional):
-          Number of top airplane models to plot. Default is 10.
+        - countries (str or list, optional): The country or list of countries to filter
+          the routes by. If not provided (default), it considers all routes.
+        - top_n (int, optional): Number of top airplane models to plot. Default is 10.
 
         Returns:
-        - Plot of the N most used airplane models by number of routes.
-        - None
+        Plot of the N most used airplane models by number of routes or None.
         """
         # Merge dataframes
         merged_df1 = pd.merge(
@@ -504,12 +488,13 @@ class FIIU:
         # Plot the N most used airplane models
         if not top_models.empty:
             plt.figure(figsize=(12, 6))
-            top_models.plot(x="Name_y", y="Count", kind="bar", color="skyblue")
+            sns.barplot(x="Name_y", y="Count", data=top_models, palette="Blues_d")
             plt.xlabel("Airplane Model")
             plt.ylabel("Number of Routes")
             title = f"Top {top_n} Airplane Models by Number of Routes"
             title += f" for {countries}" if countries else " for all countries"
             plt.title(title)
+            plt.xticks(rotation=45)
             plt.show()
         else:
             print(
@@ -596,26 +581,34 @@ class FIIU:
 
     def aircraft(self):
         """
-        Return a list of unique aircraft names from the merged DataFrame of routes and airplanes.
+        Return a list of unique aircraft names from the merged DataFrame of
+        routes and airplanes.
         """
         aircraft_names = self.airplanes_df["Name"].unique().tolist()
         return aircraft_names
 
     def aircraft_info(self, _aircraft_name: str):
         """
-        Display specifications of a given aircraft using the OpenAI GPT-3.5 Turbo model.
+        Display specifications of a given aircraft using the OpenAI
+        GPT-3.5 Turbo model.
 
         Parameters:
-            _aircraft_name (str): The name of the aircraft for which specifications are requested.
+            _aircraft_name (str): The name of the aircraft for which
+            specifications are requested.
 
         Raises:
-            ValueError: If the provided aircraft name is not found in the dataset.
-                        Instructs the user to choose a valid aircraft name from the available dataset.
-            ValueError: If the OpenAI API key is not found in the environment variable.
-                        Instructs the user to set the 'OPENAI_API_KEY' environment variable with their API key.
+            ValueError: If the provided aircraft name is not found in the
+                        dataset.
+                        Instructs the user to choose a valid aircraft name from
+                        the available dataset.
+            ValueError: If the OpenAI API key is not found in the environment
+                        variable.
+                        Instructs the user to set the 'OPENAI_API_KEY' 
+                        environment variable with their API key.
 
         Note:
-            Ensure that the OpenAI API key is set in the 'OPENAI_API_KEY' environment variable.
+            Ensure that the OpenAI API key is set in the 'OPENAI_API_KEY'
+            environment variable.
             The generated specifications are displayed in Markdown format.
         """
         # Check if the aircraft name is in the list of aircrafts
@@ -657,17 +650,22 @@ class FIIU:
 
     def airport_info(self, _airport_name: str):
         """
-        Display specifications of a given airport using the OpenAI GPT-3.5 Turbo model.
+        Display specifications of a given airport using the OpenAI
+        GPT-3.5 Turbo model.
 
         Parameters:
-            _airport_name (str): The name of the airport for which specifications are requested.
+            _airport_name (str): The name of the airport for which
+            specifications are requested.
 
         Raises:
-            ValueError: If the OpenAI API key is not found in the environment variable.
-                        Instructs the user to set the 'OPENAI_API_KEY' environment variable with their API key.
+            ValueError: If the OpenAI API key is not found in the
+                        environment variable.
+                        Instructs the user to set the 'OPENAI_API_KEY'
+                        environment variable with their API key.
 
         Note:
-            Ensure that the OpenAI API key is set in the 'OPENAI_API_KEY' environment variable.
+            Ensure that the OpenAI API key is set in the 'OPENAI_API_KEY'
+            environment variable.
             The generated specifications are displayed in Markdown format.
         """
         # Fetch your OpenAI API key from the environment variable
@@ -819,59 +817,6 @@ class FIIU:
                 ),
                 annotations=annotations,
                 margin=dict(t=120, l=0, r=0, b=0)  # Adjust the top margin to ensure annotations are visible
-            )
-
-            # Show the figure
-            fig.show()
-            # Annotations for total short-haul distance
-            # Annotations potential emission reductions
-            annotations = [
-                go.layout.Annotation(
-                    text=f"Total short-haul distance: {total_short_haul_distance:.2f} km",
-                    align="left",
-                    showarrow=False,
-                    xref="paper",
-                    yref="paper",
-                    x=0.01,
-                    y=1.10,
-                    xanchor="left",
-                    yanchor="bottom",
-                    font=dict(size=12),
-                    bgcolor="rgba(255, 255, 255, 0.9)",
-                ),
-                go.layout.Annotation(
-                    text=f"Potential CO2 reduction by replacing flights with trains: {potential_emission_reduction:.2f} tons",
-                    align="left",
-                    showarrow=False,
-                    xref="paper",
-                    yref="paper",
-                    x=0.01,
-                    y=1.05,
-                    xanchor="left",
-                    yanchor="bottom",
-                    font=dict(size=12),
-                    bgcolor="rgba(255, 255, 255, 0.9)",
-                ),
-            ]
-
-            # Create the figure with the flight paths added
-            fig = go.Figure(data=flight_paths)
-
-            # Update the layout for the figure
-            fig.update_layout(
-                title=f"Flight Routes from {country} (Short-Haul vs Long-Haul)",
-                showlegend=True,
-                geo=dict(
-                    scope="world",
-                    projection_type="equirectangular",
-                    showland=True,
-                    landcolor="rgb(243,243,243)",
-                    countrycolor="rgb(204,204,204)",
-                ),
-                annotations=annotations,
-                margin=dict(
-                    t=120, l=0, r=0, b=0
-                ),  # Adjust the top margin to ensure annotations are visible
             )
 
             # Show the figure
