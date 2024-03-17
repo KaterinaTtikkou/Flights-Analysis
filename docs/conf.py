@@ -17,8 +17,8 @@ sys.path.insert(0, os.path.abspath('../class'))
 # -- Project information -----------------------------------------------------
 
 project = 'Group_03'
-copyright = '2024, Rita Thaci, Ayscha Drager, Anna Lenna Schwarz, Katerina Ttikkou'
-author = 'Rita Thaci, Ayscha Dräger, Anna Lenna Schwarz, Katerina Ttikkou'
+copyright = '2024, Rita Thaci, Ayscha Dräger, Anna-Lena Schwarz, Katerina Ttikkou'
+author = 'Rita Thaci, Ayscha Dräger, Anna-Lena Schwarz, Katerina Ttikkou'
 
 # The full version, including alpha/beta/rc tags
 release = '1.0'
