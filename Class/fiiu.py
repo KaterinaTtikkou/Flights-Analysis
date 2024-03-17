@@ -9,7 +9,6 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from langchain_openai import OpenAI, ChatOpenAI
-import langchain
 from IPython.display import Markdown
 
 

@@ -189,4 +189,4 @@ dependencies:
       - pydantic-core==2.3.0
       - pyproj==3.6.1
       - shapely==2.0.3
-prefix: /Users/anna-lenaschwarz/anaconda3/envs/adpro
+      - langchain-openai==0.0.8
