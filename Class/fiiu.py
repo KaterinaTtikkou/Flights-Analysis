@@ -188,7 +188,7 @@ class FIIU:
         else:
             return None, None
 
-    def plot_airports_by_country(self, country_name):
+    def plot_airports_by_country(self, country_name: str):
         """
         Plots airports in a specified country on a world map.
 
@@ -346,7 +346,7 @@ class FIIU:
         plt.legend()
         plt.show()
 
-    def plot_flights_from_airport(self, airport_code, internal=False):
+    def plot_flights_from_airport(self, airport_code: str, internal=False):
         """
         Plots flight paths originating from a specified airport.
 
@@ -601,7 +601,7 @@ class FIIU:
         aircraft_names = self.airplanes_df["Name"].unique().tolist()
         return aircraft_names
 
-    def aircraft_info(self, _aircraft_name):
+    def aircraft_info(self, _aircraft_name: str):
         """
         Display specifications of a given aircraft using the OpenAI GPT-3.5 Turbo model.
 
@@ -655,7 +655,7 @@ class FIIU:
         return airport_names
 
 
-    def airport_info(self, _airport_name):
+    def airport_info(self, _airport_name: str):
         """
         Display specifications of a given airport using the OpenAI GPT-3.5 Turbo model.
 
@@ -697,7 +697,7 @@ class FIIU:
                 display(Markdown(specifications_content))
 
     def refined_plot_flights_from_country(
-        self, country, internal=False, short_haul_cutoff=1000
+        self, country: str, internal=False, short_haul_cutoff=1000
     ):
         """
         Plots flight paths originating from airports
